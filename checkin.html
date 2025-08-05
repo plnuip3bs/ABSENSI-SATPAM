@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Form Check In</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f1fc;
+      padding: 40px 20px;
+      color: #202124;
+    }
+
+    .form-container {
+      background-color: white;
+      max-width: 700px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #5f6368;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label {
+      font-weight: normal;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      background-color: #673ab7;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .submit-btn:hover {
+      background-color: #5e35b1;
+    }
+
+    .required {
+      color: red;
+    }
+
+    .thank-you-message {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #e8f5e9;
+      color: #388e3c;
+      border-radius: 6px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .thank-you-message {
+  transition: opacity 0.3s ease;
+}
+
+.submit-btn:disabled {
+ background-color: #b39ddb !important;
+    cursor: not-allowed;
+}
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h1>Check In</h1>
+    <p style="color: #5f6368; font-size: 14px;">Silahkan masukkan email anda dengan benar</p>
+
+    <form id="absensiForm">
+      <div class="form-group">
+        <label for="email">EMAIL<span class="required">*</span></label>
+        <input type="email" id="email" name="email" placeholder="contoh@gmail.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="nip">NIP/NIK <span class="required">*</span></label>
+        <input type="text" id="nip" name="nip" required />
+      </div>
+
+      <div class="form-group">
+        <label for="nama">NAMA LENGKAP <span class="required">*</span></label>
+        <select id="nama" name="nama" required>
+          <option value="">-- Pilih Nama --</option>
+          <option>AGUNG SURYAMAN</option>
+          <option>ANGGI AFRIYANTO</option>
+          <option>APRISON LUBIS</option>
+          <option>BAMBANG SAPUTRO</option>
+          <option>DANIEL FAJRI</option>
+          <option>DWI FIGO</option>
+          <option>HANDIKA DECE</option>
+          <option>HERMANSYAH</option>
+          <option>LEAM SLIONG H.</option>
+          <option>M. ANDI AINUL YAQIN</option>
+          <option>M. RIKI SATRIA</option>
+          <option>RAHMAT ALFATAH</option>
+          <option>RAJA YANDI SAPUTRA</option>
+          <option>REBITA AUDRI K. SARI</option>
+          <option>RICKY ARDIANTO</option>
+          <option>RONNY SAPUTRA</option>
+          <option>SARWO PRAYOGA</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>APAKAH ANDA SEHAT HARI INI <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="sehat" value="Ya" required /> Ya</label>
+          <label><input type="radio" name="sehat" value="Tidak" /> Tidak</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>SALAM SEHAT DAN SELAMAT <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="salam" value="Keluarga menunggu di rumah" required /> KELUARGA MENUNGGU DIRUMAH</label>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Kirim</button>
+    </form>
+
+    <div id="thankYouMessage" class="thank-you-message">
+      ✅ Terima kasih, absensi Anda telah tercatat.
+    </div>
+  </div>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyw0594HdYlkGJ00Tm0AnYmy41JJlk6IJfVUMKSDViBA8tlVkbIHiVQV0SGfwtidfvNSg/exec';
+    const form = document.getElementById('absensiForm');
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      
+      // Disable tombol submit
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Mengirim...";
+      
+      fetch(scriptURL, {
+        method: 'POST',
+        body: new FormData(form)
+      })
+      .then(response => {
+        // Tampilkan pesan sukses
+        thankYouMessage.style.display = 'block';
+        form.reset();
+        
+        // Sembunyikan pesan setelah 3 detik
+        setTimeout(() => {
+          thankYouMessage.style.display = 'none';
+        }, 3000);
+      })
+      .catch(error => {
+        // Tampilkan pesan error di console
+        console.error('Error!', error.message);
+        
+        // Buat element status jika belum ada
+        if (!document.getElementById('status')) {
+          const statusEl = document.createElement('p');
+          statusEl.id = 'status';
+          form.parentNode.insertBefore(statusEl, form.nextSibling);
+        }
+        
+        document.getElementById('status').textContent = "Terjadi kesalahan. Silakan coba lagi.";
+      })
+      .finally(() => {
+        // Enable tombol submit kembali
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Kirim";
+      });
+    });
+</script>
+
+  
+
+</body>
+</html>
+
